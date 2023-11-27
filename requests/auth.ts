@@ -33,25 +33,25 @@ module.exports = {
         }
 
         // generate new token
-        let privateToken: string = "";
-        let publicToken: string = "";
+        let privateTokenId: string = "";
+        let publicTokenId: string = "";
         while (true) {
 
             // generate token pair
-            let newPrivateToken: string = String(signUpRequest.name).toLowerCase() + "-" + crypto.randomBytes(10).toString("hex");
-            let newPublicToken: string = crypto.createHash("sha256").update(newPrivateToken).digest("hex");
+            let newPrivateTokenId: string = String(signUpRequest.name).toLowerCase() + "-" + crypto.randomBytes(10).toString("hex");
+            let newPublicTokenId: string = crypto.createHash("sha256").update(newPrivateTokenId).digest("hex");
 
             // query users for tokenId
             users = db.queryDatabase(
                 `SELECT tokenId
                 FROM users
                 WHERE tokenId = ?`,
-                [newPublicToken]);
+                [newPublicTokenId]);
 
             // check existing token
             if (!users.length) {
-                privateToken = newPrivateToken;
-                publicToken = newPublicToken;
+                privateTokenId = newPrivateTokenId;
+                publicTokenId = newPublicTokenId;
 
                 break;
             }
@@ -69,7 +69,7 @@ module.exports = {
                 ) VALUES (?, ?, ?, ?)`,
             [
                 signUpRequest.userId,
-                publicToken,
+                publicTokenId,
                 signUpRequest.name,
                 modtime
             ]
@@ -81,8 +81,8 @@ module.exports = {
             data: {
                 userId: signUpRequest.userId,
                 name: signUpRequest.name,
-                privateToken: privateToken,
-                publicToken: publicToken
+                privateTokenId: privateTokenId,
+                publicTokenId: publicTokenId
             }
         }
 
@@ -95,14 +95,14 @@ module.exports = {
         let db = require('../functions/database.ts');
         
         // hash private token
-        let publicToken: string = crypto.createHash("sha256").update(signInRequest.tokenId).digest("hex");
+        let publicTokenId: string = crypto.createHash("sha256").update(signInRequest.tokenId).digest("hex");
 
         // query users for tokenId
         let users = db.queryDatabase(
             `SELECT userId, tokenId, name
             FROM users
             WHERE tokenId = ?`,
-            [publicToken]);
+            [publicTokenId]);
         
         // check existing token
         if (!users.length) {

@@ -3,7 +3,7 @@ export interface SignUpResponse {
     data: {
         userId: string;
         name: string;
-        privateToken: string;
-        publicToken: string;
+        privateTokenId: string;
+        publicTokenId: string;
     }
 }
