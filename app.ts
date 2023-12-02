@@ -44,6 +44,17 @@ app.get("/contest-list", (req, res) => {
     res.json(response[1]);
 });
 
+app.get("/contest-detail/:contestId", (req, res) => {
+    let contestDetail = require('./requests/contest-detail.ts');
+
+    // view contest
+    let response = contestDetail.viewContest(req.params.contestId);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+});
+
 /*
 <----- POST REQUESTS ----->
 */
