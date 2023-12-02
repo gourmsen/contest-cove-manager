@@ -33,6 +33,17 @@ app.use(express.json());
 // default
 app.get("/", (req, res) => { });
 
+app.get("/contest-list", (req, res) => {
+    let contestList = require('./requests/contest-list.ts');
+
+    // list contests
+    let response = contestList.listContests();
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+});
+
 /*
 <----- POST REQUESTS ----->
 */
