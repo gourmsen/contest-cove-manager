@@ -33,6 +33,7 @@ app.use(express.json());
 // default
 app.get("/", (req, res) => { });
 
+// contest-list
 app.get("/contest-list", (req, res) => {
     let contestList = require('./requests/contest-list.ts');
 
@@ -44,11 +45,24 @@ app.get("/contest-list", (req, res) => {
     res.json(response[1]);
 });
 
+// contest-detail
 app.get("/contest-detail/:contestId", (req, res) => {
     let contestDetail = require('./requests/contest-detail.ts');
 
     // view contest
     let response = contestDetail.viewContest(req.params.contestId);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+});
+
+// contest-attendee-list
+app.get("/contest-attendee-list/:contestId", (req, res) => {
+    let contestAttendeeList = require('./requests/contest-attendee-list.ts');
+
+    // list attendees
+    let response = contestAttendeeList.listContestAttendees(req.params.contestId);
 
     // respond with status code and payload
     res.status(response[0]);
