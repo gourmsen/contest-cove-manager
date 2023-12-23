@@ -36,7 +36,6 @@ module.exports = {
                 creationDate: contests[i].creationDate,
                 state: contests[i].state,
                 authorId: contests[i].authorId,
-                entryCount: contests[i].entryCount,
                 currentRound: contests[i].currentRound,
                 maxRoundCount: contests[i].maxRoundCount,
                 rated: contests[i].rated,

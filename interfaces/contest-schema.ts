@@ -3,7 +3,6 @@ export interface ContestSchema {
     creationDate: string;
     state: string;
     authorId: string;
-    entryCount: number;
     currentRound: number;
     maxRoundCount: number;
     rated: boolean;
