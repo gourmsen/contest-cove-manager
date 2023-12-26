@@ -100,6 +100,18 @@ app.post("/sign-in", (req, res) => {
     res.json(response[1]);
 });
 
+// contest-join
+app.post("/contest-join", (req, res) => {
+    let contestJoin = require('./requests/contest-join.ts');
+
+    // attempt join
+    let response = contestJoin.joinContest(req.body);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+});
+
 // activate app and listen on port
 app.listen(env.PORT, () => {
     console.log("Contest Cove Manager is listening on port " + env.PORT);
