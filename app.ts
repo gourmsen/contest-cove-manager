@@ -18,6 +18,8 @@ export default env;
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin",
                "http://localhost:4200");
+    res.header("Access-Control-Allow-Methods",
+               "GET, POST, PUT, DELETE");
     res.header("Access-Control-Allow-Headers",
                "Origin, X-Requested-With, Content-Type, Accept");
     next();
@@ -106,6 +108,22 @@ app.post("/contest-join", (req, res) => {
 
     // attempt join
     let response = contestJoin.joinContest(req.body);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+});
+
+/*
+<----- DELETE REQUESTS ----->
+*/
+
+// contest-leave
+app.delete("/contest-leave/:contestId/:userId", (req, res) => {
+    let contestLeave = require('./requests/contest-leave.ts');
+
+    // leave contest
+    let response = contestLeave.leaveContest(req.params.contestId, req.params.userId);
 
     // respond with status code and payload
     res.status(response[0]);
