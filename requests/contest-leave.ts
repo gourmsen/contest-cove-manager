@@ -6,17 +6,17 @@ let status: number;
 let payload: any;
 
 module.exports = {
-    leaveContest(contestId: string, userId: string) {
+    leaveContest(contestId: string, attendeeId: string) {
         let db = require('../functions/database.ts');
 
-        // query attendees for userId
+        // query attendees for attendeeId
         let attendees = db.queryDatabase(
             `SELECT attendeeId
             FROM contest_attendees
             WHERE contestId = ?
             AND attendeeId = ?`,
             [contestId,
-            userId]);
+            attendeeId]);
         
         // check existing attendee
         if (!attendees.length) {
@@ -34,14 +34,14 @@ module.exports = {
             WHERE contestId = ?
             AND attendeeId = ?`,
             [contestId,
-            userId]);
+            attendeeId]);
 
         // prepare response
         let contestLeaveResponse: ContestLeaveResponse = {
             message: "User has left the contest.",
             data: {
                 contestId: contestId,
-                userId: userId
+                attendeeId: attendeeId
             }
         }
 

@@ -10,14 +10,14 @@ module.exports = {
     joinContest(contestJoinRequest: ContestJoinRequest) {
         let db = require('../functions/database.ts');
 
-        // query attendees for userId
+        // query attendees for attendeeId
         let attendees = db.queryDatabase(
             `SELECT attendeeId
             FROM contest_attendees
             WHERE contestId = ?
             AND attendeeId = ?`,
             [contestJoinRequest.contestId,
-            contestJoinRequest.userId]);
+            contestJoinRequest.attendeeId]);
         
         // check existing attendee
         if (attendees.length) {
@@ -39,7 +39,7 @@ module.exports = {
                 modtime
             ) VALUES (?, ?, ?)`,
             [contestJoinRequest.contestId,
-            contestJoinRequest.userId,
+            contestJoinRequest.attendeeId,
             modtime]);
 
         // prepare response
@@ -47,7 +47,7 @@ module.exports = {
             message: "User has joined the contest.",
             data: {
                 contestId: contestJoinRequest.contestId,
-                userId: contestJoinRequest.userId
+                attendeeId: contestJoinRequest.attendeeId
             }
         }
 
