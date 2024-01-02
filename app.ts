@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import betterLogging from 'better-logging';
 
 import { cleanEnv, port, str } from 'envalid';
 
@@ -27,6 +28,9 @@ app.use((req, res, next) => {
 
 // parse json body
 app.use(express.json());
+
+// setup better logging
+betterLogging(console);
 
 /*
 <----- GET REQUESTS ----->
@@ -65,6 +69,18 @@ app.get("/contest-attendee-list/:contestId", (req, res) => {
 
     // list attendees
     let response = contestAttendeeList.listContestAttendees(req.params.contestId);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+});
+
+// contest-objective-list
+app.get("/contest-objective-list/:contestId", (req, res) => {
+    let contestObjectiveList = require('./requests/contest-objective-list.ts');
+
+    // list objectives
+    let response = contestObjectiveList.listContestObjectives(req.params.contestId);
 
     // respond with status code and payload
     res.status(response[0]);

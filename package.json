@@ -16,6 +16,7 @@
   "author": "Maximilian Niessl",
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "better-logging": "^5.0.0",
     "better-sqlite3": "^9.1.1",
     "dotenv": "^16.3.1",
     "envalid": "^8.0.0",
