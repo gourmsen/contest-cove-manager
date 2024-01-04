@@ -130,6 +130,18 @@ app.post("/contest-join", (req, res) => {
     res.json(response[1]);
 });
 
+// contest-attendee-entry-new
+app.post("/contest-attendee-entry-new", (req, res) => {
+    let contestAttendeeEntryNew = require('./requests/contest-attendee-entry-new.ts');
+
+    // log new entry
+    let response = contestAttendeeEntryNew.logContestEntry(req.body);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+});
+
 /*
 <----- DELETE REQUESTS ----->
 */

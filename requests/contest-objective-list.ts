@@ -14,7 +14,8 @@ module.exports = {
         let contestObjectives = db.queryDatabase(
             `SELECT *
             FROM contest_objectives
-            WHERE contestId = ?`,
+            WHERE contestId = ?
+            ORDER BY id`,
             [contestId]);
 
         // check existing objectives
