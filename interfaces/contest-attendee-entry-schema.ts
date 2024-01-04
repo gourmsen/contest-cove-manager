@@ -6,5 +6,6 @@ export interface ContestAttendeeEntrySchema {
     attendeeName: string;
     entryId: string;
     round: number;
+    modtime: string;
     values: ContestObjectiveSchema[];
 }

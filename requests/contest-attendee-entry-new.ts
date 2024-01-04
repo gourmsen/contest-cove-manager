@@ -84,10 +84,14 @@ module.exports = {
         }
 
         // write new entry to table contest_attendee_entries
+        let time = "";
         let contestObjectiveList: ContestObjectiveSchema[] = new Array<ContestObjectiveSchema>();
         for (let i = 0; i < contestObjectives.length; i++) {
             let modtime = db.getModtime();
 
+            // fill time
+            time = modtime.substring(11, 16);
+            
             db.writeDatabase(
                 `INSERT INTO contest_attendee_entries (
                     contestId,
@@ -122,6 +126,7 @@ module.exports = {
             attendeeName: attendeeName,
             entryId: entryId,
             round: contests[0].currentRound,
+            modtime: time,
             values: contestObjectiveList
         }
 

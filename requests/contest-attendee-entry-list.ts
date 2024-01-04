@@ -72,6 +72,10 @@ module.exports = {
                 ORDER BY id`,
                 [contestAttendeeEntriesDistinct[i].entryId]);
             
+            // fill time
+            let time = "";
+            time = contestAttendeeEntries[0].modtime.substring(11, 16);
+
             // prepare values
             for (let j = 0; j < contestAttendeeEntries.length; j++) {
 
@@ -90,6 +94,7 @@ module.exports = {
                 attendeeName: attendeeName,
                 entryId: contestAttendeeEntriesDistinct[i].entryId,
                 round: contestAttendeeEntriesDistinct[i].round,
+                modtime: time,
                 values: contestObjectiveList
             }
 
