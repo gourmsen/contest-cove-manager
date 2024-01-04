@@ -31,6 +31,20 @@ module.exports = {
             return [status, payload];
         }
 
+        // query users for attendeeId
+        let users = db.queryDatabase(
+            `SELECT *
+            FROM users
+            WHERE userId = ?`,
+            [contestAttendeeEntryNewRequest.attendeeId]
+        );
+
+        // fill name
+        let attendeeName = "";
+        if (users.length) {
+            attendeeName = users[0].name;
+        }
+
         // query contest_objectives for contestId
         let contestObjectives = db.queryDatabase(
             `SELECT *
@@ -105,6 +119,7 @@ module.exports = {
         let contestAttendeeEntry: ContestAttendeeEntrySchema = {
             contestId: contestAttendeeEntryNewRequest.contestId,
             attendeeId: contestAttendeeEntryNewRequest.attendeeId,
+            attendeeName: attendeeName,
             entryId: entryId,
             round: contests[0].currentRound,
             values: contestObjectiveList

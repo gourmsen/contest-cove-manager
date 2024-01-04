@@ -103,6 +103,18 @@ app.get("/contest-objective-list/:contestId", (req, res) => {
     res.json(response[1]);
 });
 
+// contest-attendee-entry-list
+app.get("/contest-attendee-entry-list/:contestId", (req, res) => {
+    let contestAttendeeEntryList = require('./requests/contest-attendee-entry-list.ts');
+
+    // list entries
+    let response = contestAttendeeEntryList.listContestAttendeeEntries(req.params.contestId);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+});
+
 /*
 <----- POST REQUESTS ----->
 */
