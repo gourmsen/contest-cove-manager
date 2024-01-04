@@ -1,11 +1,14 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import betterLogging from 'better-logging';
-
+import http from 'http';
+import WebSocket from 'ws';
 import { cleanEnv, port, str } from 'envalid';
 
-// create express app
+// create express app and web-socket
 const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 
 // create environment variables conforming to TypeScript
 dotenv.config();
@@ -14,6 +17,19 @@ const env = cleanEnv(process.env, {
     DB_PATH: str()
 });
 export default env;
+
+// create web-socket client
+let clients: Set<WebSocket> = new Set();
+
+wss.on("connection", (ws: WebSocket) => {
+    clients.add(ws);
+    ws.send(JSON.stringify({event: "socket-connect"}));
+
+    ws.on("close", () => {
+        clients.delete(ws);
+        ws.send(JSON.stringify({event: "socket-disconnect"}));
+    })
+});
 
 // handle CORS for Angular
 app.use((req, res, next) => {
@@ -140,6 +156,13 @@ app.post("/contest-attendee-entry-new", (req, res) => {
     // respond with status code and payload
     res.status(response[0]);
     res.json(response[1]);
+
+    // notify web-socket clients about entry
+    for (let client of clients) {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({event: "contest-attendee-entry-new"}));
+        }
+    }
 });
 
 /*
@@ -159,6 +182,6 @@ app.delete("/contest-leave/:contestId/:userId", (req, res) => {
 });
 
 // activate app and listen on port
-app.listen(env.PORT, () => {
+server.listen(env.PORT, () => {
     console.log("Contest Cove Manager is listening on port " + env.PORT);
 });
