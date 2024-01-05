@@ -27,6 +27,17 @@ module.exports = {
         db.close();
     },
     getModtime() {
-        return new Date().toJSON();
+        let currentTime = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
+        let options: Intl.DateTimeFormatOptions = {
+            timeZone: 'Europe/Berlin',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        };
+        return new Intl.DateTimeFormat('en-US', options).format(new Date(currentTime)).replace(', ', ',');
     }
 }
