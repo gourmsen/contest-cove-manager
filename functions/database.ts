@@ -27,9 +27,10 @@ module.exports = {
         db.close();
     },
     getModtime() {
+
+        // get time
         let currentTime = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
         let options: Intl.DateTimeFormatOptions = {
-            timeZone: 'Europe/Berlin',
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
@@ -38,6 +39,17 @@ module.exports = {
             minute: '2-digit',
             second: '2-digit'
         };
-        return new Intl.DateTimeFormat('en-US', options).format(new Date(currentTime)).replace(', ', ',');
+
+        // format in US locale
+        let formattedDate = new Intl.DateTimeFormat('en-US', options).format(new Date(currentTime));
+
+        // filter single components
+        let [datePart, timePart] = formattedDate.split(', ');
+        let [month, day, year] = datePart.split('/');
+
+        // construct modtime
+        let isoString = `${year}-${month}-${day},${timePart}`;
+
+        return isoString;
     }
 }

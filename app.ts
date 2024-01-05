@@ -146,6 +146,18 @@ app.post("/sign-in", (req, res) => {
     res.json(response[1]);
 });
 
+// contest-new
+app.post("/contest-new", (req, res) => {
+    let contestNew = require('./requests/contest-new.ts');
+
+    // attempt creation
+    let response = contestNew.createContest(req.body);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+});
+
 // contest-join
 app.post("/contest-join", (req, res) => {
     let contestJoin = require('./requests/contest-join.ts');
