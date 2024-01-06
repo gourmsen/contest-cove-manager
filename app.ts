@@ -1,23 +1,52 @@
-import express from 'express';
-import cors from 'cors';
+// basics
 import dotenv from 'dotenv';
 import betterLogging from 'better-logging';
-import http from 'http';
-import WebSocket from 'ws';
-import { cleanEnv, port, str } from 'envalid';
+import fs from 'fs';
+import { cleanEnv, port, str, bool } from 'envalid';
 
-// create express app and web-socket
-const app = express();
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+// server
+import express from 'express';
+import cors from 'cors';
+
+// http
+import http from 'http';
+import https from 'https';
+import WebSocket from 'ws';
 
 // create environment variables conforming to TypeScript
 dotenv.config();
 const env = cleanEnv(process.env, {
     PORT: port(),
-    DB_PATH: str()
+    DB_PATH: str(),
+    PROD: bool(),
+    KEY_PATH: str(),
+    CERT_PATH: str()
 });
 export default env;
+
+// create express app
+const app = express();
+
+// create server depending on environment
+let server;
+if (env.PROD) {
+
+    // define private key and certificate file for SSL
+    let credentials = {
+        key: fs.readFileSync(env.KEY_PATH, 'utf8'),
+        cert: fs.readFileSync(env.CERT_PATH, 'utf8')
+    }
+
+    // create https server (production)
+    server = https.createServer(credentials, app);
+} else {
+    
+    // create http server (development)
+    server = http.createServer(app);
+}
+
+// create web-socket
+const wss = new WebSocket.Server({ server });
 
 // create web-socket client
 let clients: Set<WebSocket> = new Set();
