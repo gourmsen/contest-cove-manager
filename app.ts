@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import betterLogging from 'better-logging';
 import http from 'http';
@@ -32,15 +33,7 @@ wss.on("connection", (ws: WebSocket) => {
 });
 
 // handle CORS for Angular
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin",
-               "http://localhost:4200");
-    res.header("Access-Control-Allow-Methods",
-               "GET, POST, PUT, DELETE");
-    res.header("Access-Control-Allow-Headers",
-               "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+app.use(cors());
 
 // parse json body
 app.use(express.json());
@@ -187,6 +180,22 @@ app.post("/contest-attendee-entry-new", (req, res) => {
             client.send(JSON.stringify({event: "contest-attendee-entry-new"}));
         }
     }
+});
+
+/*
+<----- PUT REQUESTS ----->
+*/
+
+// contest-update
+app.put("/contest-update", (req, res) => {
+    let contestUpdate = require('./requests/contest-update.ts');
+
+    // attempt update
+    let response = contestUpdate.updateContest(req.body);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
 });
 
 /*
