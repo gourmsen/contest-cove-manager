@@ -70,6 +70,11 @@ app.use(express.json());
 // setup better logging
 betterLogging(console);
 
+// initialize database
+let db = require('./functions/database.ts');
+
+db.initialize();
+
 /*
 <----- GET REQUESTS ----->
 */

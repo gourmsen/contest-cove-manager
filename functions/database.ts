@@ -2,6 +2,105 @@ import env from '../app';
 import Database from 'better-sqlite3';
 
 module.exports = {
+    initialize() {
+
+        // connect to database
+        let db = new Database(env.DB_PATH);
+
+        // create table "users"
+        db.prepare(
+            `CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY,
+                userId TEXT NOT NULL UNIQUE,
+                tokenId TEXT NOT NULL,
+                name TEXT NOT NULL,
+                modtime TEXT NOT NULL)`
+        ).run();
+        
+        // create table "contests"
+        db.prepare(
+            `CREATE TABLE IF NOT EXISTS contests (
+                id INTEGER PRIMARY KEY,
+                contestId TEXT NOT NULL UNIQUE,
+                creationDate TEXT NOT NULL,
+                state TEXT NOT NULL,
+                authorId TEXT NOT NULL,
+                currentRound INTEGER NOT NULL,
+                maxRoundCount INTEGER NOT NULL,
+                rated INTEGER NOT NULL,
+                type TEXT NOT NULL,
+                modtime TEXT NOT NULL)`
+        ).run();
+
+        // create table "contest_objectives"
+        db.prepare(
+            `CREATE TABLE IF NOT EXISTS contest_objectives (
+                id INTEGER PRIMARY KEY,
+                contestId TEXT NOT NULL,
+                name TEXT NOT NULL,
+                value REAL NOT NULL,
+                modtime TEXT NOT NULL)`
+        ).run();
+
+        // create table "contest_attendees"
+        db.prepare(
+            `CREATE TABLE IF NOT EXISTS contest_attendees (
+                id INTEGER PRIMARY KEY,
+                contestId TEXT NOT NULL,
+                attendeeId TEXT NOT NULL,
+                modtime TEXT NOT NULL)`
+        ).run();
+
+        // create table "contest_attendee_entries"
+        db.prepare(
+            `CREATE TABLE IF NOT EXISTS contest_attendee_entries (
+                id INTEGER PRIMARY KEY,
+                contestId TEXT NOT NULL,
+                attendeeId TEXT NOT NULL,
+                entryId TEXT NOT NULL,
+                objectiveName TEXT NOT NULL,
+                objectiveValue REAL NOT NULL,
+                round INTEGER NOT NULL,
+                modtime TEXT NOT NULL)`
+        ).run();
+
+        // create table "contest_attendee_teams"
+        db.prepare(
+            `CREATE TABLE IF NOT EXISTS contest_attendee_teams (
+                id INTEGER PRIMARY KEY,
+                contestId TEXT NOT NULL,
+                attendeeId TEXT NOT NULL,
+                teamId INTEGER NOT NULL,
+                round INTEGER NOT NULL,
+                modtime TEXT NOT NULL)`
+        ).run();
+
+        // create table "contest_attendee_statistics"
+        db.prepare(
+            `CREATE TABLE IF NOT EXISTS contest_attendee_statistics (
+                id INTEGER PRIMARY KEY,
+                contestId TEXT NOT NULL,
+                attendeeId TEXT NOT NULL,
+                round INTEGER NOT NULL,
+                points REAL NOT NULL,
+                place INTEGER NOT NULL,
+                modtime TEXT NOT NULL)`
+        ).run();
+
+        // create table "contest_attendee_objective_statistics"
+        db.prepare(
+            `CREATE TABLE IF NOT EXISTS contest_attendee_objective_statistics (
+                id INTEGER PRIMARY KEY,
+                contestId TEXT NOT NULL,
+                attendeeId TEXT NOT NULL,
+                round INTEGER NOT NULL,
+                objectiveName TEXT NOT NULL,
+                objectiveValue REAL NOT NULL,
+                modtime TEXT NOT NULL)`
+        ).run();
+
+        db.close();
+    },
     queryDatabase(sql: string, databaseData: Array<any>) {
 
         // open database
