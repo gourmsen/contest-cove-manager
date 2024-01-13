@@ -1,3 +1,6 @@
+// functions
+import { database } from '../functions/database';
+
 // interfaces
 import { ContestJoinRequest } from "../interfaces/contest-join-request";
 import { ContestJoinResponse } from "../interfaces/contest-join-response";
@@ -6,12 +9,11 @@ import { ContestJoinResponse } from "../interfaces/contest-join-response";
 let status: number;
 let payload: any;
 
-module.exports = {
+export const contestJoin = {
     joinContest(contestJoinRequest: ContestJoinRequest) {
-        let db = require('../functions/database.ts');
 
         // query attendees for attendeeId
-        let attendees = db.queryDatabase(
+        let attendees = database.queryDatabase(
             `SELECT attendeeId
             FROM contest_attendees
             WHERE contestId = ?
@@ -30,9 +32,9 @@ module.exports = {
         }
 
         // write new attendee to table contest_attendees
-        let modtime = db.getModtime();
+        let modtime = database.getModtime();
 
-        db.writeDatabase(
+        database.writeDatabase(
             `INSERT INTO contest_attendees (
                 contestId,
                 attendeeId,

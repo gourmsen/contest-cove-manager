@@ -1,3 +1,6 @@
+// functions
+import { database } from '../functions/database';
+
 // interfaces
 import { ContestLeaveResponse } from "../interfaces/contest-leave-response";
 
@@ -5,12 +8,11 @@ import { ContestLeaveResponse } from "../interfaces/contest-leave-response";
 let status: number;
 let payload: any;
 
-module.exports = {
+export const contestLeave = {
     leaveContest(contestId: string, attendeeId: string) {
-        let db = require('../functions/database.ts');
 
         // query attendees for attendeeId
-        let attendees = db.queryDatabase(
+        let attendees = database.queryDatabase(
             `SELECT attendeeId
             FROM contest_attendees
             WHERE contestId = ?
@@ -29,7 +31,7 @@ module.exports = {
         }
 
         // delete attendee from table contest_attendees
-        db.writeDatabase(
+        database.writeDatabase(
             `DELETE FROM contest_attendees
             WHERE contestId = ?
             AND attendeeId = ?`,

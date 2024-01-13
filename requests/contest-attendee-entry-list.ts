@@ -1,3 +1,6 @@
+// functions
+import { database } from '../functions/database';
+
 // interfaces
 import { ContestObjectiveSchema } from "../interfaces/contest-objective-schema";
 import { ContestAttendeeEntrySchema } from "../interfaces/contest-attendee-entry-schema";
@@ -7,12 +10,11 @@ import { ContestAttendeeEntryListResponse } from "../interfaces/contest-attendee
 let status: number;
 let payload: any;
 
-module.exports = {
+export const contestAttendeeEntryList = {
     listContestAttendeeEntries(contestId: string) {
-        let db = require('../functions/database.ts');
 
         // query contest for contestId
-        let contests = db.queryDatabase(
+        let contests = database.queryDatabase(
             `SELECT *
             FROM contests
             WHERE contestId = ?`,
@@ -29,7 +31,7 @@ module.exports = {
         }
 
         // query contest_attendee_entries for contestId
-        let contestAttendeeEntriesDistinct = db.queryDatabase(
+        let contestAttendeeEntriesDistinct = database.queryDatabase(
             `SELECT DISTINCT contestId, attendeeId, entryId, round 
             FROM contest_attendee_entries
             WHERE contestId = ?
@@ -51,7 +53,7 @@ module.exports = {
         for (let i = 0; i < contestAttendeeEntriesDistinct.length; i++) {
 
             // query users for attendeeId
-            let users = db.queryDatabase(
+            let users = database.queryDatabase(
                 `SELECT *
                 FROM users
                 WHERE userId = ?`,
@@ -65,7 +67,7 @@ module.exports = {
             }
 
             // query contest_attendee_entries for entryId
-            let contestAttendeeEntries = db.queryDatabase(
+            let contestAttendeeEntries = database.queryDatabase(
                 `SELECT *
                 FROM contest_attendee_entries
                 WHERE entryId = ?

@@ -1,3 +1,6 @@
+// functions
+import { database } from '../functions/database';
+
 // interfaces
 import { ContestSchema } from "../interfaces/contest-schema";
 import { ContestListResponse } from "../interfaces/contest-list-response";
@@ -6,12 +9,11 @@ import { ContestListResponse } from "../interfaces/contest-list-response";
 let status: number;
 let payload: any;
 
-module.exports = {
+export const contestList = {
     listContests() {
-        let db = require('../functions/database.ts');
 
         // query contests
-        let contests = db.queryDatabase(
+        let contests = database.queryDatabase(
             `SELECT *
             FROM contests
             ORDER BY creationDate DESC`,

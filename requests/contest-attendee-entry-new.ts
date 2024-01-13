@@ -1,3 +1,5 @@
+// functions
+import { database } from '../functions/database';
 import crypto from 'crypto';
 
 // interfaces
@@ -10,12 +12,11 @@ import { ContestAttendeeEntryNewResponse } from "../interfaces/contest-attendee-
 let status: number;
 let payload: any;
 
-module.exports = {
+export const contestAttendeeEntryNew = {
     logContestEntry(contestAttendeeEntryNewRequest: ContestAttendeeEntryNewRequest) {
-        let db = require('../functions/database.ts');
 
         // query contests for contestId
-        let contests = db.queryDatabase(
+        let contests = database.queryDatabase(
             `SELECT *
             FROM contests
             WHERE contestId = ?`,
@@ -32,7 +33,7 @@ module.exports = {
         }
 
         // query users for attendeeId
-        let users = db.queryDatabase(
+        let users = database.queryDatabase(
             `SELECT *
             FROM users
             WHERE userId = ?`,
@@ -46,7 +47,7 @@ module.exports = {
         }
 
         // query contest_objectives for contestId
-        let contestObjectives = db.queryDatabase(
+        let contestObjectives = database.queryDatabase(
             `SELECT *
             FROM contest_objectives
             WHERE contestId = ?
@@ -69,7 +70,7 @@ module.exports = {
             let newEntryId: string = crypto.randomBytes(5).toString("hex");
 
             // query entries for entryId
-            let contestAttendeeEntries = db.queryDatabase(
+            let contestAttendeeEntries = database.queryDatabase(
                 `SELECT *
                 FROM contest_attendee_entries
                 WHERE entryId = ?`,
@@ -87,12 +88,12 @@ module.exports = {
         let time = "";
         let contestObjectiveList: ContestObjectiveSchema[] = new Array<ContestObjectiveSchema>();
         for (let i = 0; i < contestObjectives.length; i++) {
-            let modtime = db.getModtime();
+            let modtime = database.getModtime();
 
             // fill time
             time = modtime.substring(11, 16);
             
-            db.writeDatabase(
+            database.writeDatabase(
                 `INSERT INTO contest_attendee_entries (
                     contestId,
                     attendeeId,

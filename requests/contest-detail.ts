@@ -1,3 +1,6 @@
+// functions
+import { database } from '../functions/database';
+
 // interfaces
 import { ContestSchema } from "../interfaces/contest-schema";
 import { ContestDetailResponse } from "../interfaces/contest-detail-response";
@@ -6,12 +9,11 @@ import { ContestDetailResponse } from "../interfaces/contest-detail-response";
 let status: number;
 let payload: any;
 
-module.exports = {
+export const contestDetail = {
     viewContest(contestId: string) {
-        let db = require('../functions/database.ts');
 
         // query contests for contestId
-        let contests = db.queryDatabase(
+        let contests = database.queryDatabase(
             `SELECT *
             FROM contests
             WHERE contestId = ?`,

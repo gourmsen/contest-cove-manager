@@ -1,3 +1,7 @@
+// functions
+import { database } from '../functions/database';
+import { standings } from '../functions/standings';
+
 // interfaces
 import { ContestAttendeeSchema } from "../interfaces/contest-attendee-schema";
 import { ContestAttendeeListResponse } from "../interfaces/contest-attendee-list-response";
@@ -6,13 +10,11 @@ import { ContestAttendeeListResponse } from "../interfaces/contest-attendee-list
 let status: number;
 let payload: any;
 
-module.exports = {
+export const contestAttendeeList = {
     listContestAttendees(contestId: string) {
-        let db = require('../functions/database.ts');
-        let standings = require('../functions/standings.ts');
 
         // query contest for contestId
-        let contests = db.queryDatabase(
+        let contests = database.queryDatabase(
             `SELECT *
             FROM contests
             WHERE contestId = ?`,
@@ -29,7 +31,7 @@ module.exports = {
         }
 
         // query attendees for contestId
-        let contestAttendees = db.queryDatabase(
+        let contestAttendees = database.queryDatabase(
             `SELECT *
             FROM contest_attendees
             WHERE contestId = ?
@@ -52,7 +54,7 @@ module.exports = {
         for (let i = 0; i < contestAttendees.length; i++) {
 
             // query users for attendeeId
-            let users = db.queryDatabase(
+            let users = database.queryDatabase(
                 `SELECT *
                 FROM users
                 WHERE userId = ?`,

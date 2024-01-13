@@ -1,11 +1,13 @@
-module.exports = {
+// functions
+import { database } from './database';
+
+export const standings = {
     calculatePoints(contestId: string, attendeeId: string, round: number) {
-        let db = require('../functions/database.ts');
     
         // query entries and objectives for points
         let attendeePoints;
         if (round) {
-            attendeePoints = db.queryDatabase(
+            attendeePoints = database.queryDatabase(
                 `SELECT sum(a.objectiveValue * b.value) AS points
                 FROM contest_attendee_entries AS a
                 INNER JOIN contest_objectives AS b
@@ -16,7 +18,7 @@ module.exports = {
                 AND a.round = ?`,
                 [contestId, attendeeId, round]);
         } else {
-            attendeePoints = db.queryDatabase(
+            attendeePoints = database.queryDatabase(
                 `SELECT sum(a.objectiveValue * b.value) AS points
                 FROM contest_attendee_entries AS a
                 INNER JOIN contest_objectives AS b
@@ -35,12 +37,11 @@ module.exports = {
         }
     },
     calculatePlace(contestId: string, attendeeId: string, round: number) {
-        let db = require('../functions/database.ts');
 
         // query entries and objectives for points
         let attendeePoints;
         if (round) {
-            attendeePoints = db.queryDatabase(
+            attendeePoints = database.queryDatabase(
                 `SELECT a.attendeeId, sum(a.objectiveValue * b.value) AS points
                 FROM contest_attendee_entries AS a
                 INNER JOIN contest_objectives AS b
@@ -52,7 +53,7 @@ module.exports = {
                 ORDER BY points DESC`,
                 [contestId, round]);
         } else {
-            attendeePoints = db.queryDatabase(
+            attendeePoints = database.queryDatabase(
                 `SELECT a.attendeeId, sum(a.objectiveValue * b.value) AS points
                 FROM contest_attendee_entries AS a
                 INNER JOIN contest_objectives AS b

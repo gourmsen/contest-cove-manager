@@ -1,7 +1,7 @@
 import env from '../app';
 import Database from 'better-sqlite3';
 
-module.exports = {
+export const database = {
     initialize() {
 
         // connect to database
@@ -107,7 +107,7 @@ module.exports = {
         let db = new Database(env.DB_PATH);
 
         // query records
-        let records = db.prepare(sql).all(databaseData);
+        let records: any[] = db.prepare(sql).all(databaseData);
 
         // close database
         db.close();

@@ -1,3 +1,5 @@
+// functions
+import { database } from '../functions/database';
 import crypto from 'crypto';
 
 // interfaces
@@ -11,12 +13,10 @@ import { SignInResponse } from "../interfaces/sign-in-response";
 let status: number;
 let payload: any;
 
-module.exports = {
+export const auth = {
     signUp(signUpRequest: SignUpRequest) {
-        let db = require('../functions/database.ts');
-
         // query users for userId
-        let users = db.queryDatabase(
+        let users = database.queryDatabase(
             `SELECT userId
             FROM users
             WHERE userId = ?`,
@@ -42,7 +42,7 @@ module.exports = {
             let newPublicTokenId: string = crypto.createHash("sha256").update(newPrivateTokenId).digest("hex");
 
             // query users for tokenId
-            users = db.queryDatabase(
+            users = database.queryDatabase(
                 `SELECT tokenId
                 FROM users
                 WHERE tokenId = ?`,
@@ -58,9 +58,9 @@ module.exports = {
         }
 
         // write new user to table users
-        let modtime = db.getModtime();
+        let modtime = database.getModtime();
 
-        db.writeDatabase(
+        database.writeDatabase(
             `INSERT INTO users (
                 userId,
                 tokenId,
@@ -92,13 +92,12 @@ module.exports = {
         return [status, payload];
     },
     signIn(signInRequest: SignInRequest) {
-        let db = require('../functions/database.ts');
-        
+
         // hash private token
         let publicTokenId: string = crypto.createHash("sha256").update(signInRequest.tokenId).digest("hex");
 
         // query users for tokenId
-        let users = db.queryDatabase(
+        let users = database.queryDatabase(
             `SELECT userId, tokenId, name
             FROM users
             WHERE tokenId = ?`,

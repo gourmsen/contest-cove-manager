@@ -13,6 +13,28 @@ import http from 'http';
 import https from 'https';
 import WebSocket from 'ws';
 
+// functions
+import { database } from './functions/database';
+
+// requests (get)
+import { contestList } from './requests/contest-list';
+import { contestDetail } from './requests/contest-detail';
+import { contestAttendeeList } from './requests/contest-attendee-list';
+import { contestObjectiveList } from './requests/contest-objective-list';
+import { contestAttendeeEntryList } from './requests/contest-attendee-entry-list';
+
+// requests (post)
+import { auth } from './requests/auth';
+import { contestNew } from './requests/contest-new';
+import { contestJoin } from './requests/contest-join';
+import { contestAttendeeEntryNew } from './requests/contest-attendee-entry-new';
+
+// requests (put)
+import { contestUpdate } from './requests/contest-update';
+
+// requests (delete)
+import { contestLeave } from './requests/contest-leave';
+
 // create environment variables conforming to TypeScript
 dotenv.config();
 const env = cleanEnv(process.env, {
@@ -70,10 +92,7 @@ app.use(express.json());
 // setup better logging
 betterLogging(console);
 
-// initialize database
-let db = require('./functions/database.ts');
-
-db.initialize();
+database.initialize();
 
 /*
 <----- GET REQUESTS ----->
@@ -84,7 +103,6 @@ app.get("/", (req, res) => { });
 
 // contest-list
 app.get("/contest-list", (req, res) => {
-    let contestList = require('./requests/contest-list.ts');
 
     // list contests
     let response = contestList.listContests();
@@ -96,7 +114,6 @@ app.get("/contest-list", (req, res) => {
 
 // contest-detail
 app.get("/contest-detail/:contestId", (req, res) => {
-    let contestDetail = require('./requests/contest-detail.ts');
 
     // view contest
     let response = contestDetail.viewContest(req.params.contestId);
@@ -108,7 +125,6 @@ app.get("/contest-detail/:contestId", (req, res) => {
 
 // contest-attendee-list
 app.get("/contest-attendee-list/:contestId", (req, res) => {
-    let contestAttendeeList = require('./requests/contest-attendee-list.ts');
 
     // list attendees
     let response = contestAttendeeList.listContestAttendees(req.params.contestId);
@@ -120,7 +136,6 @@ app.get("/contest-attendee-list/:contestId", (req, res) => {
 
 // contest-objective-list
 app.get("/contest-objective-list/:contestId", (req, res) => {
-    let contestObjectiveList = require('./requests/contest-objective-list.ts');
 
     // list objectives
     let response = contestObjectiveList.listContestObjectives(req.params.contestId);
@@ -132,7 +147,6 @@ app.get("/contest-objective-list/:contestId", (req, res) => {
 
 // contest-attendee-entry-list
 app.get("/contest-attendee-entry-list/:contestId", (req, res) => {
-    let contestAttendeeEntryList = require('./requests/contest-attendee-entry-list.ts');
 
     // list entries
     let response = contestAttendeeEntryList.listContestAttendeeEntries(req.params.contestId);
@@ -151,7 +165,6 @@ app.post("/", (req, res) => { });
 
 // sign-up
 app.post("/sign-up", (req, res) => {
-    let auth = require('./requests/auth.ts');
 
     // attempt sign-up
     let response = auth.signUp(req.body);
@@ -163,7 +176,6 @@ app.post("/sign-up", (req, res) => {
 
 // sign-in
 app.post("/sign-in", (req, res) => {
-    let auth = require('./requests/auth.ts');
 
     // attempt sign-in
     let response = auth.signIn(req.body);
@@ -175,7 +187,6 @@ app.post("/sign-in", (req, res) => {
 
 // contest-new
 app.post("/contest-new", (req, res) => {
-    let contestNew = require('./requests/contest-new.ts');
 
     // attempt creation
     let response = contestNew.createContest(req.body);
@@ -187,7 +198,6 @@ app.post("/contest-new", (req, res) => {
 
 // contest-join
 app.post("/contest-join", (req, res) => {
-    let contestJoin = require('./requests/contest-join.ts');
 
     // attempt join
     let response = contestJoin.joinContest(req.body);
@@ -199,7 +209,6 @@ app.post("/contest-join", (req, res) => {
 
 // contest-attendee-entry-new
 app.post("/contest-attendee-entry-new", (req, res) => {
-    let contestAttendeeEntryNew = require('./requests/contest-attendee-entry-new.ts');
 
     // log new entry
     let response = contestAttendeeEntryNew.logContestEntry(req.body);
@@ -218,7 +227,6 @@ app.post("/contest-attendee-entry-new", (req, res) => {
 
 // contest-update
 app.put("/contest-update", (req, res) => {
-    let contestUpdate = require('./requests/contest-update.ts');
 
     // attempt update
     let response = contestUpdate.updateContest(req.body);
@@ -237,7 +245,6 @@ app.put("/contest-update", (req, res) => {
 
 // contest-leave
 app.delete("/contest-leave/:contestId/:userId", (req, res) => {
-    let contestLeave = require('./requests/contest-leave.ts');
 
     // leave contest
     let response = contestLeave.leaveContest(req.params.contestId, req.params.userId);

@@ -1,3 +1,6 @@
+// functions
+import { database } from '../functions/database';
+
 // interfaces
 import { ContestObjectiveSchema } from '../interfaces/contest-objective-schema';
 import { ContestObjectiveListResponse } from "../interfaces/contest-objective-list-response";
@@ -6,12 +9,11 @@ import { ContestObjectiveListResponse } from "../interfaces/contest-objective-li
 let status: number;
 let payload: any;
 
-module.exports = {
+export const contestObjectiveList = {
     listContestObjectives(contestId: string) {
-        let db = require('../functions/database.ts');
 
         // query objectives for contestId
-        let contestObjectives = db.queryDatabase(
+        let contestObjectives = database.queryDatabase(
             `SELECT *
             FROM contest_objectives
             WHERE contestId = ?

@@ -1,3 +1,5 @@
+// functions
+import { database } from '../functions/database';
 import crypto from 'crypto';
 
 // interfaces
@@ -9,9 +11,8 @@ import { ContestNewResponse } from "../interfaces/contest-new-response";
 let status: number;
 let payload: any;
 
-module.exports = {
+export const contestNew = {
     createContest(contestNewRequest: ContestNewRequest) {
-        let db = require('../functions/database.ts');
 
         // generate contestId
         let contestId: string = "";
@@ -19,7 +20,7 @@ module.exports = {
             let newContestId: string = crypto.randomBytes(3).toString("hex");
 
             // query contests for contestId
-            let contests = db.queryDatabase(
+            let contests = database.queryDatabase(
                 `SELECT *
                 FROM contests
                 WHERE contestId = ?`,
@@ -34,11 +35,11 @@ module.exports = {
         }
 
         // write new contest to table contests
-        let modtime = db.getModtime();
+        let modtime = database.getModtime();
         let creationDate = modtime;
         let rated: number = contestNewRequest.rated ? 1 : 0;
 
-        db.writeDatabase(
+        database.writeDatabase(
             `INSERT INTO contests (
                 contestId,
                 creationDate,
@@ -62,9 +63,9 @@ module.exports = {
 
         // write contest objectives to table contest_objectives
         for (let i = 0; i < contestNewRequest.objectives.length; i++) {
-            let modtime = db.getModtime();
+            let modtime = database.getModtime();
 
-            db.writeDatabase(
+            database.writeDatabase(
                 `INSERT INTO contest_objectives (
                     contestId,
                     name,

@@ -1,3 +1,6 @@
+// functions
+import { database } from '../functions/database';
+
 // interfaces
 import { ContestSchema } from '../interfaces/contest-schema';
 import { ContestUpdateRequest } from '../interfaces/contest-update-request';
@@ -7,12 +10,11 @@ import { ContestUpdateResponse } from '../interfaces/contest-update-response';
 let status: number;
 let payload: any;
 
-module.exports = {
+export const contestUpdate = {
     updateContest(contestUpdateRequest: ContestUpdateRequest) {
-        let db = require('../functions/database.ts');
 
         // query contest for contestId
-        let contests = db.queryDatabase(
+        let contests = database.queryDatabase(
             `SELECT *
             FROM contests
             WHERE contestId = ?`,
@@ -29,9 +31,9 @@ module.exports = {
         }
 
         // update contest in table contests
-        let modtime = db.getModtime();
+        let modtime = database.getModtime();
 
-        db.writeDatabase(
+        database.writeDatabase(
             `UPDATE contests
             SET state = ?,
             currentRound = ?,
