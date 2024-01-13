@@ -16,7 +16,7 @@ module.exports = {
                 name TEXT NOT NULL,
                 modtime TEXT NOT NULL)`
         ).run();
-        
+
         // create table "contests"
         db.prepare(
             `CREATE TABLE IF NOT EXISTS contests (

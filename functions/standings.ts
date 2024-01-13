@@ -37,6 +37,14 @@ module.exports = {
     calculatePlace(contestId: string, attendeeId: string, round: number) {
         let db = require('../functions/database.ts');
 
+        // query attendees for contestId
+        let contestAttendees = db.queryDatabase(
+            `SELECT *
+            FROM contest_attendees
+            WHERE contestId = ?`,
+            [contestId]
+        );
+
         // query entries and objectives for points
         let attendeePoints;
         if (round) {
@@ -93,5 +101,8 @@ module.exports = {
                 return currentPlace;
             }
         }
+
+        // return attendee count when no place found
+        return contestAttendees.length;
     }
 }
