@@ -33,6 +33,7 @@ import { contestAttendeeEntryNew } from './requests/contest-attendee-entry-new';
 import { contestUpdate } from './requests/contest-update';
 
 // requests (delete)
+import { contestDelete } from './requests/contest-delete';
 import { contestLeave } from './requests/contest-leave';
 
 // create environment variables conforming to TypeScript
@@ -103,7 +104,7 @@ app.get("/", (req, res) => { });
 
 // alive
 app.get("/alive", (req, res) => {
-    
+
     // respond with status code and payload
     res.status(200);
     res.json({status: "alive"});
@@ -250,6 +251,17 @@ app.put("/contest-update", (req, res) => {
 /*
 <----- DELETE REQUESTS ----->
 */
+
+// contest-delete
+app.delete("/contest-delete/:contestId/:userId", (req, res) => {
+
+    // delete contest
+    let response = contestDelete.deleteContest(req.params.contestId, req.params.userId);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+});
 
 // contest-leave
 app.delete("/contest-leave/:contestId/:userId", (req, res) => {
