@@ -101,6 +101,14 @@ database.initialize();
 // default
 app.get("/", (req, res) => { });
 
+// alive
+app.get("/alive", (req, res) => {
+    
+    // respond with status code and payload
+    res.status(200);
+    res.json({status: "alive"});
+});
+
 // contest-list
 app.get("/contest-list", (req, res) => {
 
@@ -260,7 +268,7 @@ server.listen(env.PORT, () => {
 });
 
 /*
-<----- OTHER FUNCTION ----->
+<----- OTHER FUNCTIONS ----->
 */
 
 function notifyAllClients(event: string) {
