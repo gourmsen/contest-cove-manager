@@ -1,6 +1,6 @@
 {
   "name": "contest-cove-manager",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A back-end REST-API for the contest-cove web interface",
   "main": "app.ts",
   "scripts": {
