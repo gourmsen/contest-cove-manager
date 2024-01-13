@@ -209,11 +209,7 @@ app.post("/contest-attendee-entry-new", (req, res) => {
     res.json(response[1]);
 
     // notify web-socket clients about entry
-    for (let client of clients) {
-        if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify({event: "contest-attendee-entry-new"}));
-        }
-    }
+    notifyAllClients("contest-attendee-entry-new");
 });
 
 /*
@@ -230,6 +226,9 @@ app.put("/contest-update", (req, res) => {
     // respond with status code and payload
     res.status(response[0]);
     res.json(response[1]);
+
+    // notify web-socket clients about update
+    notifyAllClients("contest-update");
 });
 
 /*
@@ -252,3 +251,17 @@ app.delete("/contest-leave/:contestId/:userId", (req, res) => {
 server.listen(env.PORT, () => {
     console.log("Contest Cove Manager is listening on port " + env.PORT);
 });
+
+/*
+<----- OTHER FUNCTION ----->
+*/
+
+function notifyAllClients(event: string) {
+
+    // notify web-socket clients about entry
+    for (let client of clients) {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({event: event}));
+        }
+    }
+}
