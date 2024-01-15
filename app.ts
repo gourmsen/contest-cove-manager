@@ -28,6 +28,7 @@ import { auth } from './requests/auth';
 import { contestNew } from './requests/contest-new';
 import { contestJoin } from './requests/contest-join';
 import { contestAttendeeEntryNew } from './requests/contest-attendee-entry-new';
+import { contestStatisticsRefresh } from './requests/contest-statistics-refresh';
 
 // requests (put)
 import { contestUpdate } from './requests/contest-update';
@@ -228,6 +229,17 @@ app.post("/contest-attendee-entry-new", (req, res) => {
 
     // notify web-socket clients about entry
     notifyAllClients("contest-attendee-entry-new");
+});
+
+// contest-statistics-refresh
+app.post("/contest-statistics-refresh", (req, res) => {
+
+    // attempt refresh
+    let response = contestStatisticsRefresh.refreshContestStatistics(req.body);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
 });
 
 /*

@@ -1,4 +1,5 @@
 // functions
+import { ContestObjectiveSchema } from '../interfaces/contest-objective-schema';
 import { database } from './database';
 
 export const standings = {
@@ -31,7 +32,7 @@ export const standings = {
 
         // check points
         if (attendeePoints[0].points) {
-            return Math.round(attendeePoints[0].points * 100 / 100);
+            return attendeePoints[0].points;
         } else {
             return 0;
         }
@@ -70,7 +71,7 @@ export const standings = {
         for (let i = 0; i < attendeePoints.length; i++) {
             let attendeeData = {
                 id: attendeePoints[i].attendeeId,
-                points: Math.round(attendeePoints[i].points * 100 / 100)
+                points: attendeePoints[i].points
             }
 
             attendees.push(attendeeData);
@@ -97,5 +98,43 @@ export const standings = {
 
         // return the latest next place when attendee not found
         return currentPlace + 1;
+    },
+    calculateObjectiveValues(contestId: string, attendeeId: string, round: number) {
+
+        // query entries for objective values
+        let attendeeObjectiveValues;
+        if (round) {
+            attendeeObjectiveValues = database.queryDatabase(
+                `SELECT objectiveName, sum(objectiveValue) AS overallValue
+                FROM contest_attendee_entries
+                WHERE contestId = ?
+                AND attendeeId = ?
+                AND round = ?
+                GROUP BY objectiveName
+                ORDER BY id`,
+                [contestId, attendeeId, round]);
+        } else {
+            attendeeObjectiveValues = database.queryDatabase(
+                `SELECT objectiveName, sum(objectiveValue) AS overallValue
+                FROM contest_attendee_entries
+                WHERE contestId = ?
+                AND attendeeId = ?
+                GROUP BY objectiveName
+                ORDER BY id`,
+                [contestId, attendeeId]);
+        }
+
+        // fill objective array
+        let objectiveValueList: ContestObjectiveSchema[] = new Array<ContestObjectiveSchema>();
+        for (let i = 0; i < attendeeObjectiveValues.length; i++) {
+            let objectiveData: ContestObjectiveSchema = {
+                name: attendeeObjectiveValues[i].objectiveName,
+                value: attendeeObjectiveValues[i].overallValue
+            }
+
+            objectiveValueList.push(objectiveData);
+        }
+
+        return objectiveValueList;
     }
 }
