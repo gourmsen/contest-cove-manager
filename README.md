@@ -17,6 +17,7 @@ A back-end REST-API for the contest-cove web interface.
 | `/contest-new`                 | `POST`   | Creates a contest.                 |
 | `/contest-join`                | `POST`   | Joins a contest.                   |
 | `/contest-attendee-entry-new`  | `POST`   | Create a contest entry.            |
+| `/contest-statistics-refresh`  | `POST`   | Refreshes contest statistics.      |
 | `/contest-update`              | `PUT`    | Updates a contest.                 |
 | `/contest-delete`              | `DELETE` | Deletes a contest.                 |
 | `/contest-leave`               | `DELETE` | Leaves a contest.                  |
