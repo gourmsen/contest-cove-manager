@@ -38,9 +38,45 @@ export const contestDelete = {
             return [status, payload];
         }
 
-        // delete attendee from table contests
+        // delete contest from table contests
         database.writeDatabase(
             `DELETE FROM contests
+            WHERE contestId = ?`,
+            [contestId]);
+
+        // delete objectives from table contest_objectives
+        database.writeDatabase(
+            `DELETE FROM contest_objectives
+            WHERE contestId = ?`,
+            [contestId]);
+
+        // delete attendees from table contest_attendees
+        database.writeDatabase(
+            `DELETE FROM contest_attendees
+            WHERE contestId = ?`,
+            [contestId]);
+
+        // delete teams from table contest_attendee_teams
+        database.writeDatabase(
+            `DELETE FROM contest_attendee_teams
+            WHERE contestId = ?`,
+            [contestId]);
+
+        // delete entries from table contest_attendee_entries
+        database.writeDatabase(
+            `DELETE FROM contest_attendee_entries
+            WHERE contestId = ?`,
+            [contestId]);
+
+        // delete statistics from table contest_attendee_statistics
+        database.writeDatabase(
+            `DELETE FROM contest_attendee_statistics
+            WHERE contestId = ?`,
+            [contestId]);
+
+        // delete objective statistics from table contest_attendee_objective_statistics
+        database.writeDatabase(
+            `DELETE FROM contest_attendee_objective_statistics
             WHERE contestId = ?`,
             [contestId]);
 
