@@ -12,6 +12,7 @@ A back-end REST-API for the contest-cove web interface.
 | `/contest-attendee-list`       | `GET`    | Lists all attendees of a contest.  |
 | `/contest-objective-list`      | `GET`    | Lists all objectives of a contest. |
 | `/contest-attendee-entry-list` | `GET`    | Lists all entries of a contest.    |
+| `/contest-statistics-list`     | `GET`    | Lists all contest statistics.      |
 | `/sign-up`                     | `POST`   | Creates an user.                   |
 | `/sign-in`                     | `POST`   | Verifies an user.                  |
 | `/contest-new`                 | `POST`   | Creates a contest.                 |
