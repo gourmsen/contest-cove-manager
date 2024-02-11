@@ -30,6 +30,7 @@ import { contestNew } from "./requests/contest-new";
 import { contestJoin } from "./requests/contest-join";
 import { contestAttendeeEntryNew } from "./requests/contest-attendee-entry-new";
 import { contestStatisticsRefresh } from "./requests/contest-statistics-refresh";
+import { contestTeamsNew } from "./requests/contest-teams-new";
 
 // requests (put)
 import { contestUpdate } from "./requests/contest-update";
@@ -132,9 +133,7 @@ app.get("/contest-detail/:contestId", (req, res) => {
 // contest-attendee-list
 app.get("/contest-attendee-list/:contestId", (req, res) => {
     // list attendees
-    let response = contestAttendeeList.listContestAttendees(
-        req.params.contestId
-    );
+    let response = contestAttendeeList.listContestAttendees(req.params.contestId);
 
     // respond with status code and payload
     res.status(response[0]);
@@ -144,9 +143,7 @@ app.get("/contest-attendee-list/:contestId", (req, res) => {
 // contest-objective-list
 app.get("/contest-objective-list/:contestId", (req, res) => {
     // list objectives
-    let response = contestObjectiveList.listContestObjectives(
-        req.params.contestId
-    );
+    let response = contestObjectiveList.listContestObjectives(req.params.contestId);
 
     // respond with status code and payload
     res.status(response[0]);
@@ -156,9 +153,7 @@ app.get("/contest-objective-list/:contestId", (req, res) => {
 // contest-attendee-entry-list
 app.get("/contest-attendee-entry-list/:contestId", (req, res) => {
     // list entries
-    let response = contestAttendeeEntryList.listContestAttendeeEntries(
-        req.params.contestId
-    );
+    let response = contestAttendeeEntryList.listContestAttendeeEntries(req.params.contestId);
 
     // respond with status code and payload
     res.status(response[0]);
@@ -168,23 +163,12 @@ app.get("/contest-attendee-entry-list/:contestId", (req, res) => {
 // contest-statistics-list
 app.get("/contest-statistics-list", (req, res) => {
     // fill optional parameters
-    let type: string =
-        req.query.type !== undefined ? (req.query.type as string) : "";
-    let contestId: string =
-        req.query.contestId !== undefined
-            ? (req.query.contestId as string)
-            : "";
-    let attendeeId: string =
-        req.query.attendeeId !== undefined
-            ? (req.query.attendeeId as string)
-            : "";
+    let type: string = req.query.type !== undefined ? (req.query.type as string) : "";
+    let contestId: string = req.query.contestId !== undefined ? (req.query.contestId as string) : "";
+    let attendeeId: string = req.query.attendeeId !== undefined ? (req.query.attendeeId as string) : "";
 
     // list statistics
-    let response = contestStatisticsList.listStatistics(
-        type,
-        contestId,
-        attendeeId
-    );
+    let response = contestStatisticsList.listStatistics(type, contestId, attendeeId);
 
     // respond with status code and payload
     res.status(response[0]);
@@ -261,6 +245,19 @@ app.post("/contest-statistics-refresh", (req, res) => {
     res.json(response[1]);
 });
 
+// contest-teams-new
+app.post("/contest-teams-new", (req, res) => {
+    // generate new teams
+    let response = contestTeamsNew.generateContestTeams(req.body);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+
+    // notify web-socket clients about teams generation
+    notifyAllClients("contest-teams-new");
+});
+
 /*
 <----- PUT REQUESTS ----->
 */
@@ -285,10 +282,7 @@ app.put("/contest-update", (req, res) => {
 // contest-delete
 app.delete("/contest-delete/:contestId/:userId", (req, res) => {
     // delete contest
-    let response = contestDelete.deleteContest(
-        req.params.contestId,
-        req.params.userId
-    );
+    let response = contestDelete.deleteContest(req.params.contestId, req.params.userId);
 
     // respond with status code and payload
     res.status(response[0]);
@@ -298,10 +292,7 @@ app.delete("/contest-delete/:contestId/:userId", (req, res) => {
 // contest-leave
 app.delete("/contest-leave/:contestId/:userId", (req, res) => {
     // leave contest
-    let response = contestLeave.leaveContest(
-        req.params.contestId,
-        req.params.userId
-    );
+    let response = contestLeave.leaveContest(req.params.contestId, req.params.userId);
 
     // respond with status code and payload
     res.status(response[0]);
