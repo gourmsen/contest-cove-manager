@@ -1,7 +1,9 @@
 // functions
 import { database } from "../functions/database";
+import { teams } from "../functions/teams";
 
 // interfaces
+import { ContestTeamSchema } from "../interfaces/contest-team-schema";
 import { ContestTeamsNewRequest } from "../interfaces/contest-teams-new-request";
 import { ContestTeamsNewResponse } from "../interfaces/contest-teams-new-response";
 
@@ -63,14 +65,19 @@ export const contestTeamsNew = {
             return [status, payload];
         }
 
-        // TODO: Generate teams and prepare response
+        // generate teams
+        let contestTeams: ContestTeamSchema[] = teams.generateTeams(
+            contestTeamsNewRequest.contestId,
+            contestTeamsNewRequest.teamSizes,
+            contests[0].maxRound
+        );
 
         // prepare response
         let contestTeamsNewResponse: ContestTeamsNewResponse = {
             message: "Teams have been generated.",
             data: {
                 contestId: contestTeamsNewRequest.contestId,
-                teams: [], // TODO: Fill teams
+                teams: contestTeams,
             },
         };
 
