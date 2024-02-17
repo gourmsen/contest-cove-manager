@@ -23,6 +23,7 @@ import { contestAttendeeList } from "./requests/contest-attendee-list";
 import { contestObjectiveList } from "./requests/contest-objective-list";
 import { contestAttendeeEntryList } from "./requests/contest-attendee-entry-list";
 import { contestStatisticsList } from "./requests/contest-statistics-list";
+import { contestTeamList } from "./requests/contest-team-list";
 
 // requests (post)
 import { auth } from "./requests/auth";
@@ -169,6 +170,16 @@ app.get("/contest-statistics-list", (req, res) => {
 
     // list statistics
     let response = contestStatisticsList.listStatistics(type, contestId, attendeeId);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+});
+
+// contest-team-list
+app.get("/contest-team-list/:contestId", (req, res) => {
+    // list teams
+    let response = contestTeamList.listContestTeams(req.params.contestId);
 
     // respond with status code and payload
     res.status(response[0]);
