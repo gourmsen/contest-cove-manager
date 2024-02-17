@@ -68,8 +68,8 @@ export const contestTeamsNew = {
         // generate teams
         let contestTeams: ContestTeamSchema[] = teams.generateTeams(
             contestTeamsNewRequest.contestId,
-            contestTeamsNewRequest.teamSizes,
-            contests[0].maxRound
+            contests[0].currentRound,
+            contestTeamsNewRequest.teamSizes
         );
 
         // prepare response
