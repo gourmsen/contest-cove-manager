@@ -30,12 +30,23 @@ export const contestTeamList = {
             return [status, payload];
         }
 
+        let contestTeams: ContestTeamSchema[] = teams.listTeams(contestId, contests[0].currentRound);
+
+        if (!contestTeams.length) {
+            status = 404;
+            payload = {
+                message: "Contest doesn't have any teams.",
+            };
+
+            return [status, payload];
+        }
+
         // prepare response
         let contestTeamListResponse: ContestTeamListResponse = {
             message: "Teams have been retrieved.",
             data: {
                 contestId: contestId,
-                teams: [], // TODO: fill teams
+                teams: contestTeams,
             },
         };
 

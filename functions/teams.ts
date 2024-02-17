@@ -90,6 +90,65 @@ export const teams = {
 
         return teams;
     },
+    listTeams(contestId: string, round: number): ContestTeamSchema[] {
+        // query contest_attendee_teams for contestId
+        let teams = database.queryDatabase(
+            `SELECT *
+            FROM contest_attendee_teams
+            WHERE contestId = ?
+            AND round = ?
+            ORDER BY teamId`,
+            [contestId, round]
+        );
+
+        if (!teams.length) {
+            return [];
+        }
+
+        // get maximum team number
+        let maxTeamId: number = 0;
+        for (let i = 0; i < teams.length; i++) {
+            if (teams[i].teamId > maxTeamId) {
+                maxTeamId = teams[i].teamId;
+            }
+        }
+
+        // fill teams
+        let contestTeams: ContestTeamSchema[] = [];
+        for (let i = 0; i < maxTeamId; i++) {
+            let attendees: ContestAttendeeSchema[] = [];
+
+            // get attendees
+            for (let j = 0; j < teams.length; j++) {
+                if (teams[j].teamId === i + 1) {
+                    // get attendee name
+                    let users = database.queryDatabase(
+                        `SELECT *
+                        FROM users
+                        WHERE userId = ?`,
+                        [teams[j].attendeeId]
+                    );
+
+                    // prepare attendee
+                    let attendee: ContestAttendeeSchema = {
+                        attendeeId: users[0].userId,
+                        name: users[0].name,
+                    };
+
+                    attendees.push(attendee);
+                }
+            }
+
+            // prepare team
+            let contestTeam: ContestTeamSchema = {
+                attendees: attendees,
+            };
+
+            contestTeams.push(contestTeam);
+        }
+
+        return contestTeams;
+    },
     combinations(attendees: string[], size: number): string[][] {
         let combinations: string[][] = [];
 
