@@ -4,6 +4,9 @@ export interface ContestTeamListResponse {
     message: string;
     data: {
         contestId: string;
-        teams: ContestTeamSchema[];
+        rounds: {
+            round: number;
+            teams: ContestTeamSchema[];
+        }[];
     };
 }

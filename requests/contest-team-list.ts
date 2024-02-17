@@ -30,15 +30,18 @@ export const contestTeamList = {
             return [status, payload];
         }
 
-        let contestTeams: ContestTeamSchema[] = teams.listTeams(contestId, contests[0].currentRound);
+        // get teams for each round
+        let rounds: any[] = [];
+        for (let i = 0; i < contests[0].currentRound; i++) {
+            let contestTeams: ContestTeamSchema[] = teams.listTeams(contestId, i + 1);
 
-        if (!contestTeams.length) {
-            status = 404;
-            payload = {
-                message: "Contest doesn't have any teams.",
+            // prepare round data
+            let roundData = {
+                round: i + 1,
+                teams: contestTeams,
             };
 
-            return [status, payload];
+            rounds.push(roundData);
         }
 
         // prepare response
@@ -46,7 +49,7 @@ export const contestTeamList = {
             message: "Teams have been retrieved.",
             data: {
                 contestId: contestId,
-                teams: contestTeams,
+                rounds: rounds,
             },
         };
 
