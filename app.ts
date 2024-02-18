@@ -35,6 +35,7 @@ import { contestTeamsNew } from "./requests/contest-teams-new";
 
 // requests (put)
 import { contestUpdate } from "./requests/contest-update";
+import { contestTeamsUpdate } from "./requests/contest-teams-update";
 
 // requests (delete)
 import { contestDelete } from "./requests/contest-delete";
@@ -284,6 +285,19 @@ app.put("/contest-update", (req, res) => {
 
     // notify web-socket clients about update
     notifyAllClients("contest-update");
+});
+
+// contest-teams-update
+app.put("/contest-teams-update", (req, res) => {
+    // attempt update
+    let response = contestTeamsUpdate.updateContestTeams(req.body);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+
+    // notify web-socket clients about update
+    notifyAllClients("contest-teams-update");
 });
 
 /*
