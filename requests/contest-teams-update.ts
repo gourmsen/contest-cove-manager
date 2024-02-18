@@ -31,12 +31,19 @@ export const contestTeamsUpdate = {
             return [status, payload];
         }
 
+        // update teams
+        teams.updateTeams(
+            contestTeamsUpdateRequest.contestId,
+            contestTeamsUpdateRequest.round,
+            contestTeamsUpdateRequest.teams
+        );
+
         // prepare response
         let contestTeamsUpdateResponse: ContestTeamsUpdateResponse = {
             message: "Teams have been updated.",
             data: {
                 contestId: contestTeamsUpdateRequest.contestId,
-                teams: [], // TODO: fill teams
+                teams: contestTeamsUpdateRequest.teams,
             },
         };
 

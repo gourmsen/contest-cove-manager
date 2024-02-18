@@ -232,6 +232,9 @@ app.post("/contest-join", (req, res) => {
     // respond with status code and payload
     res.status(response[0]);
     res.json(response[1]);
+
+    // notify web-socket clients about join
+    notifyAllClients("contest-join");
 });
 
 // contest-attendee-entry-new
@@ -255,6 +258,9 @@ app.post("/contest-statistics-refresh", (req, res) => {
     // respond with status code and payload
     res.status(response[0]);
     res.json(response[1]);
+
+    // notify web-socket clients about statistics
+    notifyAllClients("contest-statistics-refresh");
 });
 
 // contest-teams-new
@@ -322,6 +328,9 @@ app.delete("/contest-leave/:contestId/:userId", (req, res) => {
     // respond with status code and payload
     res.status(response[0]);
     res.json(response[1]);
+
+    // notify web-socket clients about leave
+    notifyAllClients("contest-leave");
 });
 
 // activate app and listen on port
