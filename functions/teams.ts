@@ -149,6 +149,34 @@ export const teams = {
 
         return contestTeams;
     },
+    updateTeams(contestId: string, round: number, teams: ContestTeamSchema[]) {
+        // delete current teams
+        database.writeDatabase(
+            `DELETE FROM contest_attendee_teams
+            WHERE contestId = ?
+            AND round = ?`,
+            [contestId, round]
+        );
+
+        // write each team to the database
+        for (let i = 0; i < teams.length; i++) {
+            for (let j = 0; j < teams[i].attendees.length; j++) {
+                // write team to database
+                let modtime = database.getModtime();
+
+                database.writeDatabase(
+                    `INSERT INTO contest_attendee_teams (
+                        contestId,
+                        attendeeId,
+                        teamId,
+                        round,
+                        modtime
+                    ) VALUES (?, ?, ?, ?, ?)`,
+                    [contestId, teams[i].attendees[j].attendeeId, i + 1, round, modtime]
+                );
+            }
+        }
+    },
     combinations(attendees: string[], size: number): string[][] {
         let combinations: string[][] = [];
 

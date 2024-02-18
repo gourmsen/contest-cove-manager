@@ -22,5 +22,6 @@ A back-end REST-API for the contest-cove web interface.
 | `/contest-statistics-refresh`  | `POST`   | Refreshes contest statistics.      |
 | `/contest-teams-new`           | `POST`   | Generates contest teams.           |
 | `/contest-update`              | `PUT`    | Updates a contest.                 |
+| `/contest-teams-update`        | `PUT`    | Updates teams of a contest round.  |
 | `/contest-delete`              | `DELETE` | Deletes a contest.                 |
 | `/contest-leave`               | `DELETE` | Leaves a contest.                  |

@@ -35,6 +35,7 @@ import { contestTeamsNew } from "./requests/contest-teams-new";
 
 // requests (put)
 import { contestUpdate } from "./requests/contest-update";
+import { contestTeamsUpdate } from "./requests/contest-teams-update";
 
 // requests (delete)
 import { contestDelete } from "./requests/contest-delete";
@@ -231,6 +232,9 @@ app.post("/contest-join", (req, res) => {
     // respond with status code and payload
     res.status(response[0]);
     res.json(response[1]);
+
+    // notify web-socket clients about join
+    notifyAllClients("contest-join");
 });
 
 // contest-attendee-entry-new
@@ -254,6 +258,9 @@ app.post("/contest-statistics-refresh", (req, res) => {
     // respond with status code and payload
     res.status(response[0]);
     res.json(response[1]);
+
+    // notify web-socket clients about statistics
+    notifyAllClients("contest-statistics-refresh");
 });
 
 // contest-teams-new
@@ -286,6 +293,19 @@ app.put("/contest-update", (req, res) => {
     notifyAllClients("contest-update");
 });
 
+// contest-teams-update
+app.put("/contest-teams-update", (req, res) => {
+    // attempt update
+    let response = contestTeamsUpdate.updateContestTeams(req.body);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+
+    // notify web-socket clients about update
+    notifyAllClients("contest-teams-update");
+});
+
 /*
 <----- DELETE REQUESTS ----->
 */
@@ -308,6 +328,9 @@ app.delete("/contest-leave/:contestId/:userId", (req, res) => {
     // respond with status code and payload
     res.status(response[0]);
     res.json(response[1]);
+
+    // notify web-socket clients about leave
+    notifyAllClients("contest-leave");
 });
 
 // activate app and listen on port
