@@ -24,6 +24,7 @@ import { contestObjectiveList } from "./requests/contest-objective-list";
 import { contestAttendeeEntryList } from "./requests/contest-attendee-entry-list";
 import { contestStatisticsList } from "./requests/contest-statistics-list";
 import { contestTeamList } from "./requests/contest-team-list";
+import { contestTimerDetail } from "./requests/contest-timer-detail";
 
 // requests (post)
 import { auth } from "./requests/auth";
@@ -181,6 +182,26 @@ app.get("/contest-statistics-list", (req, res) => {
 app.get("/contest-team-list/:contestId", (req, res) => {
     // list teams
     let response = contestTeamList.listContestTeams(req.params.contestId);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+});
+
+// contest-timer-detail
+app.get("/contest-timer-detail/:contestId/:round", (req, res) => {
+    // check round parameter
+    let round: number = 0;
+    if (!isNaN(Number(req.params.round))) {
+        round = Number(req.params.round);
+    } else {
+        res.status(400);
+        res.json({ message: "Round not numeric." });
+        return;
+    }
+
+    // view timer
+    let response = contestTimerDetail.viewTimer(req.params.contestId, round);
 
     // respond with status code and payload
     res.status(response[0]);
