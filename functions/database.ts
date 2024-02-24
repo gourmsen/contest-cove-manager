@@ -154,7 +154,7 @@ export const database = {
         let [month, day, year] = datePart.split("/");
 
         // construct modtime
-        let isoString = `${year}-${month}-${day},${timePart}`;
+        let isoString = `${year}-${month}-${day}T${timePart}`;
 
         return isoString;
     },
