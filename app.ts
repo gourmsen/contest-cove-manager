@@ -33,6 +33,7 @@ import { contestJoin } from "./requests/contest-join";
 import { contestAttendeeEntryNew } from "./requests/contest-attendee-entry-new";
 import { contestStatisticsRefresh } from "./requests/contest-statistics-refresh";
 import { contestTeamsNew } from "./requests/contest-teams-new";
+import { contestTimerNew } from "./requests/contest-timer-new";
 
 // requests (put)
 import { contestUpdate } from "./requests/contest-update";
@@ -295,6 +296,19 @@ app.post("/contest-teams-new", (req, res) => {
 
     // notify web-socket clients about teams generation
     notifyAllClients("contest-teams-new");
+});
+
+// contest-timer-new
+app.post("/contest-timer-new", (req, res) => {
+    // create new timer
+    let response = contestTimerNew.createTimer(req.body);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+
+    // notify web-socket clients about timer creation
+    notifyAllClients("contest-timer-new");
 });
 
 /*
