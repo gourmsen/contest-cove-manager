@@ -30,11 +30,39 @@ export const contestTimerNew = {
             return [status, payload];
         }
 
+        // delete current timer
+        database.writeDatabase(
+            `DELETE FROM contest_round_timers
+            WHERE contestId = ?
+            AND round = ?`,
+            [contestTimerNewRequest.contestId, contestTimerNewRequest.round]
+        );
+
+        // write new timer to database
+        let modtime = database.getModtime();
+
+        database.writeDatabase(
+            `INSERT INTO contest_round_timers (
+                contestId,
+                round,
+                start,
+                duration,
+                modtime
+            ) VALUES (?, ?, ?, ?, ?)`,
+            [
+                contestTimerNewRequest.contestId,
+                contestTimerNewRequest.round,
+                modtime,
+                contestTimerNewRequest.duration,
+                modtime,
+            ]
+        );
+
         // prepare round timer
         let timer: ContestTimerSchema = {
             contestId: contestTimerNewRequest.contestId,
             round: contestTimerNewRequest.round,
-            start: "", // TODO: fill with start time
+            start: modtime,
             duration: contestTimerNewRequest.duration,
         };
 
