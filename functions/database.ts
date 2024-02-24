@@ -1,9 +1,8 @@
-import env from '../app';
-import Database from 'better-sqlite3';
+import env from "../app";
+import Database from "better-sqlite3";
 
 export const database = {
     initialize() {
-
         // connect to database
         let db = new Database(env.DB_PATH);
 
@@ -99,10 +98,20 @@ export const database = {
                 modtime TEXT NOT NULL)`
         ).run();
 
+        // create table "contest_round_timers"
+        db.prepare(
+            `CREATE TABLE IF NOT EXISTS contest_round_timers (
+                id INTEGER PRIMARY KEY,
+                contestId TEXT NOT NULL,
+                round INTEGER NOT NULL,
+                start TEXT NOT NULL,
+                duration INTEGER NOT NULL,
+                modtime TEXT NOT NULL)`
+        ).run();
+
         db.close();
     },
     queryDatabase(sql: string, databaseData: Array<any>) {
-
         // open database
         let db = new Database(env.DB_PATH);
 
@@ -115,7 +124,6 @@ export const database = {
         return records;
     },
     writeDatabase(sql: string, databaseData: Array<any>) {
-
         // open database
         let db = new Database(env.DB_PATH);
 
@@ -126,29 +134,28 @@ export const database = {
         db.close();
     },
     getModtime() {
-
         // get time
-        let currentTime = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
+        let currentTime = new Date().toLocaleString("en-US", { timeZone: "Europe/Berlin" });
         let options: Intl.DateTimeFormatOptions = {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
             hour12: false,
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
         };
 
         // format in US locale
-        let formattedDate = new Intl.DateTimeFormat('en-US', options).format(new Date(currentTime));
+        let formattedDate = new Intl.DateTimeFormat("en-US", options).format(new Date(currentTime));
 
         // filter single components
-        let [datePart, timePart] = formattedDate.split(', ');
-        let [month, day, year] = datePart.split('/');
+        let [datePart, timePart] = formattedDate.split(", ");
+        let [month, day, year] = datePart.split("/");
 
         // construct modtime
         let isoString = `${year}-${month}-${day},${timePart}`;
 
         return isoString;
-    }
-}
+    },
+};
