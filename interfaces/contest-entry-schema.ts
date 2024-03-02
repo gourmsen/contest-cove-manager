@@ -1,6 +1,6 @@
 import { ContestObjectiveSchema } from "./contest-objective-schema";
 
-export interface ContestAttendeeEntrySchema {
+export interface ContestEntrySchema {
     contestId: string;
     attendeeId: string;
     attendeeName: string;

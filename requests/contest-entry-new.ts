@@ -4,23 +4,23 @@ import crypto from 'crypto';
 
 // interfaces
 import { ContestObjectiveSchema } from '../interfaces/contest-objective-schema';
-import { ContestAttendeeEntrySchema } from '../interfaces/contest-attendee-entry-schema';
-import { ContestAttendeeEntryNewRequest } from "../interfaces/contest-attendee-entry-new-request";
-import { ContestAttendeeEntryNewResponse } from "../interfaces/contest-attendee-entry-new-response";
+import { ContestEntrySchema } from '../interfaces/contest-entry-schema';
+import { ContestEntryNewRequest } from "../interfaces/contest-entry-new-request";
+import { ContestEntryNewResponse } from "../interfaces/contest-entry-new-response";
 
 // module variables
 let status: number;
 let payload: any;
 
-export const contestAttendeeEntryNew = {
-    logContestEntry(contestAttendeeEntryNewRequest: ContestAttendeeEntryNewRequest) {
+export const contestEntryNew = {
+    logContestEntry(contestEntryNewRequest: ContestEntryNewRequest) {
 
         // query contests for contestId
         let contests = database.queryDatabase(
             `SELECT *
             FROM contests
             WHERE contestId = ?`,
-            [contestAttendeeEntryNewRequest.contestId]);
+            [contestEntryNewRequest.contestId]);
         
         // check existing contest
         if (!contests.length) {
@@ -37,7 +37,7 @@ export const contestAttendeeEntryNew = {
             `SELECT *
             FROM users
             WHERE userId = ?`,
-            [contestAttendeeEntryNewRequest.attendeeId]
+            [contestEntryNewRequest.attendeeId]
         );
 
         // fill name
@@ -52,7 +52,7 @@ export const contestAttendeeEntryNew = {
             FROM contest_objectives
             WHERE contestId = ?
             ORDER BY id`,
-            [contestAttendeeEntryNewRequest.contestId]);
+            [contestEntryNewRequest.contestId]);
         
         // check existing objectives
         if (!contestObjectives.length) {
@@ -70,14 +70,14 @@ export const contestAttendeeEntryNew = {
             let newEntryId: string = crypto.randomBytes(5).toString("hex");
 
             // query entries for entryId
-            let contestAttendeeEntries = database.queryDatabase(
+            let contestEntries = database.queryDatabase(
                 `SELECT *
                 FROM contest_attendee_entries
                 WHERE entryId = ?`,
                 [newEntryId]);
 
             // check existing entryId
-            if (!contestAttendeeEntries.length) {
+            if (!contestEntries.length) {
                 entryId = newEntryId;
                 
                 break;
@@ -103,27 +103,27 @@ export const contestAttendeeEntryNew = {
                     round,
                     modtime
                 ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                [contestAttendeeEntryNewRequest.contestId,
-                contestAttendeeEntryNewRequest.attendeeId,
+                [contestEntryNewRequest.contestId,
+                contestEntryNewRequest.attendeeId,
                 entryId,
                 contestObjectives[i].name,
-                contestAttendeeEntryNewRequest.values[i],
+                contestEntryNewRequest.values[i],
                 contests[0].currentRound,
                 modtime]);
             
             // prepare objective list for response
             let contestObjective: ContestObjectiveSchema = {
                 name: contestObjectives[i].name,
-                value: contestAttendeeEntryNewRequest.values[i]
+                value: contestEntryNewRequest.values[i]
             }
 
             contestObjectiveList.push(contestObjective);
         }
 
         // prepare entry for response
-        let contestAttendeeEntry: ContestAttendeeEntrySchema = {
-            contestId: contestAttendeeEntryNewRequest.contestId,
-            attendeeId: contestAttendeeEntryNewRequest.attendeeId,
+        let contestEntry: ContestEntrySchema = {
+            contestId: contestEntryNewRequest.contestId,
+            attendeeId: contestEntryNewRequest.attendeeId,
             attendeeName: attendeeName,
             entryId: entryId,
             round: contests[0].currentRound,
@@ -132,13 +132,13 @@ export const contestAttendeeEntryNew = {
         }
 
         // prepare response
-        let contestAttendeeEntryNewResponse: ContestAttendeeEntryNewResponse = {
+        let contestEntryNewResponse: ContestEntryNewResponse = {
             message: "Entry has been logged.",
-            data: contestAttendeeEntry
+            data: contestEntry
         }
 
         status = 200;
-        payload = contestAttendeeEntryNewResponse;
+        payload = contestEntryNewResponse;
 
         return [status, payload];
     }

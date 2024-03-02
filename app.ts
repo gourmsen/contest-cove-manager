@@ -21,7 +21,7 @@ import { contestList } from "./requests/contest-list";
 import { contestDetail } from "./requests/contest-detail";
 import { contestAttendeeList } from "./requests/contest-attendee-list";
 import { contestObjectiveList } from "./requests/contest-objective-list";
-import { contestAttendeeEntryList } from "./requests/contest-attendee-entry-list";
+import { contestEntryList } from "./requests/contest-entry-list";
 import { contestStatisticsList } from "./requests/contest-statistics-list";
 import { contestTeamList } from "./requests/contest-team-list";
 import { contestTimerDetail } from "./requests/contest-timer-detail";
@@ -30,7 +30,7 @@ import { contestTimerDetail } from "./requests/contest-timer-detail";
 import { auth } from "./requests/auth";
 import { contestNew } from "./requests/contest-new";
 import { contestJoin } from "./requests/contest-join";
-import { contestAttendeeEntryNew } from "./requests/contest-attendee-entry-new";
+import { contestEntryNew } from "./requests/contest-entry-new";
 import { contestStatisticsRefresh } from "./requests/contest-statistics-refresh";
 import { contestTeamsNew } from "./requests/contest-teams-new";
 import { contestTimerNew } from "./requests/contest-timer-new";
@@ -154,10 +154,10 @@ app.get("/contest-objective-list/:contestId", (req, res) => {
     res.json(response[1]);
 });
 
-// contest-attendee-entry-list
-app.get("/contest-attendee-entry-list/:contestId", (req, res) => {
+// contest-entry-list
+app.get("/contest-entry-list/:contestId", (req, res) => {
     // list entries
-    let response = contestAttendeeEntryList.listContestAttendeeEntries(req.params.contestId);
+    let response = contestEntryList.listContestEntries(req.params.contestId);
 
     // respond with status code and payload
     res.status(response[0]);
@@ -259,17 +259,17 @@ app.post("/contest-join", (req, res) => {
     notifyAllClients("contest-join");
 });
 
-// contest-attendee-entry-new
-app.post("/contest-attendee-entry-new", (req, res) => {
+// contest-entry-new
+app.post("/contest-entry-new", (req, res) => {
     // log new entry
-    let response = contestAttendeeEntryNew.logContestEntry(req.body);
+    let response = contestEntryNew.logContestEntry(req.body);
 
     // respond with status code and payload
     res.status(response[0]);
     res.json(response[1]);
 
     // notify web-socket clients about entry
-    notifyAllClients("contest-attendee-entry-new");
+    notifyAllClients("contest-entry-new");
 });
 
 // contest-statistics-refresh
