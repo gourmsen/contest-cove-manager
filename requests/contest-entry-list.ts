@@ -3,15 +3,15 @@ import { database } from '../functions/database';
 
 // interfaces
 import { ContestObjectiveSchema } from "../interfaces/contest-objective-schema";
-import { ContestAttendeeEntrySchema } from "../interfaces/contest-attendee-entry-schema";
-import { ContestAttendeeEntryListResponse } from "../interfaces/contest-attendee-entry-list-response";
+import { ContestEntrySchema } from "../interfaces/contest-entry-schema";
+import { ContestEntryListResponse } from "../interfaces/contest-entry-list-response";
 
 // module variables
 let status: number;
 let payload: any;
 
-export const contestAttendeeEntryList = {
-    listContestAttendeeEntries(contestId: string) {
+export const contestEntryList = {
+    listContestEntries(contestId: string) {
 
         // query contest for contestId
         let contests = database.queryDatabase(
@@ -31,14 +31,14 @@ export const contestAttendeeEntryList = {
         }
 
         // query contest_attendee_entries for contestId
-        let contestAttendeeEntriesDistinct = database.queryDatabase(
+        let contestEntriesDistinct = database.queryDatabase(
             `SELECT DISTINCT contestId, attendeeId, entryId, round 
             FROM contest_attendee_entries
             WHERE contestId = ?
             ORDER BY id DESC`,
             [contestId]);
 
-        if (!contestAttendeeEntriesDistinct.length) {
+        if (!contestEntriesDistinct.length) {
             status = 404;
             payload = {
                 message: "No contest entries exist."
@@ -48,16 +48,16 @@ export const contestAttendeeEntryList = {
         }
 
         // fill contest attendee entry list with entries
-        let contestAttendeeEntryList: ContestAttendeeEntrySchema[] = new Array<ContestAttendeeEntrySchema>();
+        let contestEntryList: ContestEntrySchema[] = new Array<ContestEntrySchema>();
         let contestObjectiveList: ContestObjectiveSchema[] = new Array<ContestObjectiveSchema>();
-        for (let i = 0; i < contestAttendeeEntriesDistinct.length; i++) {
+        for (let i = 0; i < contestEntriesDistinct.length; i++) {
 
             // query users for attendeeId
             let users = database.queryDatabase(
                 `SELECT *
                 FROM users
                 WHERE userId = ?`,
-                [contestAttendeeEntriesDistinct[i].attendeeId]
+                [contestEntriesDistinct[i].attendeeId]
             );
 
             // fill name
@@ -67,54 +67,54 @@ export const contestAttendeeEntryList = {
             }
 
             // query contest_attendee_entries for entryId
-            let contestAttendeeEntries = database.queryDatabase(
+            let contestEntries = database.queryDatabase(
                 `SELECT *
                 FROM contest_attendee_entries
                 WHERE entryId = ?
                 ORDER BY id`,
-                [contestAttendeeEntriesDistinct[i].entryId]);
+                [contestEntriesDistinct[i].entryId]);
             
             // fill time
             let time = "";
-            time = contestAttendeeEntries[0].modtime.substring(11, 16);
+            time = contestEntries[0].modtime.substring(11, 16);
 
             // prepare values
-            for (let j = 0; j < contestAttendeeEntries.length; j++) {
+            for (let j = 0; j < contestEntries.length; j++) {
 
                 // fill objective
                 let contestObjective: ContestObjectiveSchema = {
-                    name: contestAttendeeEntries[j].objectiveName,
-                    value: contestAttendeeEntries[j].objectiveValue
+                    name: contestEntries[j].objectiveName,
+                    value: contestEntries[j].objectiveValue
                 }
 
                 contestObjectiveList.push(contestObjective);
             }
 
-            let contestAttendeeEntry: ContestAttendeeEntrySchema = {
-                contestId: contestAttendeeEntriesDistinct[i].contestId,
-                attendeeId: contestAttendeeEntriesDistinct[i].attendeeId,
+            let contestEntry: ContestEntrySchema = {
+                contestId: contestEntriesDistinct[i].contestId,
+                attendeeId: contestEntriesDistinct[i].attendeeId,
                 attendeeName: attendeeName,
-                entryId: contestAttendeeEntriesDistinct[i].entryId,
-                round: contestAttendeeEntriesDistinct[i].round,
+                entryId: contestEntriesDistinct[i].entryId,
+                round: contestEntriesDistinct[i].round,
                 modtime: time,
                 values: contestObjectiveList
             }
 
-            contestAttendeeEntryList.push(contestAttendeeEntry);
+            contestEntryList.push(contestEntry);
 
             contestObjectiveList = [];
         }
 
         // prepare response
-        let contestAttendeeEntryListResponse: ContestAttendeeEntryListResponse = {
+        let contestEntryListResponse: ContestEntryListResponse = {
             message: "Entry list retrieved.",
             data: {
-                entries: contestAttendeeEntryList
+                entries: contestEntryList
             }
         }
 
         status = 200;
-        payload = contestAttendeeEntryListResponse;
+        payload = contestEntryListResponse;
 
         return [status, payload];
     }
