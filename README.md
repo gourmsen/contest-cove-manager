@@ -27,3 +27,4 @@ A back-end REST-API for the contest-cove web interface.
 | `/contest-teams-update`       | `PUT`    | Updates teams of a contest round.  |
 | `/contest-delete`             | `DELETE` | Deletes a contest.                 |
 | `/contest-leave`              | `DELETE` | Leaves a contest.                  |
+| `/contest-entry-delete`       | `DELETE` | Deletes a contest entry.           |

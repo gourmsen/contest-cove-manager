@@ -42,6 +42,7 @@ import { contestTeamsUpdate } from "./requests/contest-teams-update";
 // requests (delete)
 import { contestDelete } from "./requests/contest-delete";
 import { contestLeave } from "./requests/contest-leave";
+import { contestEntryDelete } from "./requests/contest-entry-delete";
 
 // create environment variables conforming to TypeScript
 dotenv.config();
@@ -366,6 +367,19 @@ app.delete("/contest-leave/:contestId/:userId", (req, res) => {
 
     // notify web-socket clients about leave
     notifyAllClients("contest-leave");
+});
+
+// contest-entry-delete
+app.delete("/contest-entry-delete/:entryId", (req, res) => {
+    // delete entry
+    let response = contestEntryDelete.deleteContestEntry(req.params.entryId);
+
+    // respond with status code and payload
+    res.status(response[0]);
+    res.json(response[1]);
+
+    // notify web-socket clients about entry deletion
+    notifyAllClients("contest-entry-delete");
 });
 
 // activate app and listen on port
