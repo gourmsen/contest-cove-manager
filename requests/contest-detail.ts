@@ -1,5 +1,5 @@
 // functions
-import { database } from '../functions/database';
+import { database } from "../functions/database";
 
 // interfaces
 import { ContestSchema } from "../interfaces/contest-schema";
@@ -11,22 +11,35 @@ let payload: any;
 
 export const contestDetail = {
     viewContest(contestId: string) {
-
         // query contests for contestId
         let contests = database.queryDatabase(
             `SELECT *
             FROM contests
             WHERE contestId = ?`,
-            [contestId]);
+            [contestId]
+        );
 
         // check existing contest
         if (!contests.length) {
             status = 404;
             payload = {
-                message: "Contest not found."
-            }
+                message: "Contest not found.",
+            };
 
             return [status, payload];
+        }
+
+        // check for statistics
+        let contestAttendeeStatistics = database.queryDatabase(
+            `SELECT *
+            FROM contest_attendee_statistics
+            WHERE contestId = ?`,
+            [contestId]
+        );
+
+        let hasStatistics = false;
+        if (contestAttendeeStatistics.length) {
+            hasStatistics = true;
         }
 
         // fill contest details
@@ -38,18 +51,19 @@ export const contestDetail = {
             currentRound: contests[0].currentRound,
             maxRoundCount: contests[0].maxRoundCount,
             rated: contests[0].rated,
-            type: contests[0].type
-        }
+            type: contests[0].type,
+            hasStatistics: hasStatistics,
+        };
 
         // prepare response
         let contestDetailResponse: ContestDetailResponse = {
             message: "Contest details retrieved.",
-            data: contest
-        }
+            data: contest,
+        };
 
         status = 200;
         payload = contestDetailResponse;
 
         return [status, payload];
-    }
-}
+    },
+};

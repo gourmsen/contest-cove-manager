@@ -33,6 +33,18 @@ export const contestList = {
         let contestList:ContestSchema[] = new Array<ContestSchema>();
 
         for (let i = 0; i < contests.length; i++) {
+            // check for statistics
+            let contestAttendeeStatistics = database.queryDatabase(
+                `SELECT *
+                FROM contest_attendee_statistics
+                WHERE contestId = ?`,
+                [contests[i].contestId]);
+
+            let hasStatistics = false;
+            if (contestAttendeeStatistics.length) {
+                hasStatistics = true;
+            }
+
             let contest: ContestSchema = {
                 contestId: contests[i].contestId,
                 creationDate: contests[i].creationDate,
@@ -41,7 +53,8 @@ export const contestList = {
                 currentRound: contests[i].currentRound,
                 maxRoundCount: contests[i].maxRoundCount,
                 rated: contests[i].rated,
-                type: contests[i].type
+                type: contests[i].type,
+                hasStatistics: hasStatistics
             }
 
             contestList.push(contest);
