@@ -7,4 +7,5 @@ export interface ContestSchema {
     maxRoundCount: number;
     rated: boolean;
     type: string;
+    hasStatistics?: boolean;
 }
