@@ -1,6 +1,7 @@
 // functions
 import { database } from "../functions/database";
 import { teams } from "../functions/teams";
+import { standings } from "../functions/standings";
 
 // interfaces
 import { ContestTeamSchema } from "../interfaces/contest-team-schema";
@@ -34,6 +35,17 @@ export const contestTeamList = {
         let rounds: any[] = [];
         for (let i = 0; i < contests[0].currentRound; i++) {
             let contestTeams: ContestTeamSchema[] = teams.listTeams(contestId, i + 1);
+
+            // calculate points for each team
+            for (let j = 0; j < contestTeams.length; j++) {
+                let points = 0;
+
+                for (let k = 0; k < contestTeams[j].attendees.length; k++) {
+                    points += standings.calculatePoints(contestId, contestTeams[j].attendees[k].attendeeId, i + 1);
+                }
+
+                contestTeams[j].points = points;
+            }
 
             // prepare round data
             let roundData = {
